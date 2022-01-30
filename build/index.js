@@ -1,6 +1,6 @@
 "use strict";
 const dataTest = `
-0,9 -> 5,9
+0,21 -> 5,9
 8,0 -> 0,8
 9,4 -> 3,4
 2,2 -> 2,1
@@ -13,7 +13,6 @@ const dataTest = `
 `;
 function readLine(data) {
     const newData = data.split("\n");
-    console.log(newData);
     return newData;
 }
 function cleanArray(data) {
@@ -24,23 +23,71 @@ function cleanArray(data) {
             newData.push(element);
         }
     }
-    console.log("array limpio");
-    console.log(newData);
     return newData;
 }
 function separateXandY(data) {
     const regExp = /\d+/g;
-    const newMatrix = [];
+    let newMatrix = [];
+    let partArray;
     for (let i = 0; i < data.length; i++) {
         const element = data[i];
-        const partArray = element.match(regExp);
-        newMatrix.push(partArray);
+        partArray = element.match(regExp);
+        let newPartArray = partArray;
+        newMatrix.push(newPartArray);
     }
-    console.log(newMatrix);
+    return newMatrix;
+}
+function addMatrix(array) { }
+function runMatrix(data) {
+    for (let i = 0; i < data.length; i++) {
+        const element = data[i];
+        if ([element[0] === element[2]]) {
+            addMatrix(element);
+        }
+    }
+}
+function comparation(num1, num2, numMax) {
+    if (num1 > numMax || num2 > numMax) {
+        if (num1 > num2) {
+            return num1;
+        }
+        else {
+            return num2;
+        }
+    }
+    else
+        return numMax;
+}
+function cornersMap(data) {
+    let xMax = 0;
+    let yMax = 0;
+    data.forEach((element) => {
+        xMax = comparation(parseInt(element[0]), parseInt(element[2]), xMax);
+        yMax = comparation(parseInt(element[1]), parseInt(element[3]), yMax);
+    });
+    return [xMax.toString(), yMax.toString()];
+}
+function createMap(array) {
+    let newMap = [];
+    let newArray = [];
+    for (let i = 0; i < parseInt(array[0]) + 1; i++) {
+        for (let j = 0; j < parseInt(array[1]) + 1; j++) {
+            newArray.push(".");
+        }
+        newMap.push(newArray);
+        newArray = [];
+    }
+    return newMap;
 }
 function main(data) {
+    let corners = ["0", "0"];
+    let map;
     const dataArray = readLine(data);
     const cleanWithoutSpaces = cleanArray(dataArray);
     const separateArray = separateXandY(cleanWithoutSpaces);
+    corners = cornersMap(separateArray);
+    map = createMap(corners);
+    console.log(map);
+    runMatrix(separateArray);
 }
 main(dataTest);

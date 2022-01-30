@@ -40,18 +40,18 @@ function separateXandY(data: string[]): string[][] {
   return newMatrix;
 }
 
-function addMatrix(array: string[],eje: string, mapGeneral: string[][]) {
-  let newMapGeneral: string[][]
-  if (eje==="x"){
-    mapGeneral[parseInt(array[0])][parseInt(array[1])] = (parseInt(mapGeneral[parseInt(array[0])][parseInt(array[1])]) + 1).toString() 
+function addMatrix(array: number[], eje: string, mapGeneral: number[][]) {
+  let newMapGeneral: number[][];
+  if (eje === "x") {
+    mapGeneral[array[0]][array[1]] = mapGeneral[array[0]][array[1]] + 1;
   }
 }
 
-function runMatrix(data: string[][], mapGeneral: string[][]) {
+function runMatrix(data: number[][], mapGeneral: number[][]) {
   for (let i = 0; i < data.length; i++) {
     const element = data[i];
     if ([element[0] === element[2]]) {
-      addMatrix(element,"x", mapGeneral);
+      addMatrix(element, "x", mapGeneral);
     }
   }
 }
@@ -63,42 +63,57 @@ function comparation(num1: number, num2: number, numMax: number) {
     } else {
       return num2;
     }
-  } else return numMax
+  } else return numMax;
 }
 
-function cornersMap(data: string[][]): [string, string] {
+function cornersMap(data: number[][]): [number, number] {
   let xMax = 0;
   let yMax = 0;
   data.forEach((element) => {
-    xMax = comparation(parseInt(element[0]), parseInt(element[2]), xMax);
-    yMax = comparation(parseInt(element[1]), parseInt(element[3]), yMax);
+    xMax = comparation(element[0], element[2], xMax);
+    yMax = comparation(element[1], element[3], yMax);
   });
-  return [xMax.toString(), yMax.toString()];
+  return [xMax, yMax];
 }
 
-function createMap(array: string[]):string[][] {
-  let newMap: string[][]=[];
-  let newArray = []
-  for (let i = 0; i < parseInt(array[0])+1; i++) {
-    for (let j = 0; j < parseInt(array[1])+1; j++) {
-      newArray.push("0")
+function createMap(array: number[]): number[][] {
+  let newMap: number[][] = [];
+  let newArray = [];
+  for (let i = 0; i < (array[0]) + 1; i++) {
+    for (let j = 0; j < (array[1]) + 1; j++) {
+      newArray.push(0);
     }
-    newMap.push(newArray)
-    newArray=[]
+    newMap.push(newArray);
+    newArray = [];
   }
-  return newMap
+  return newMap;
+}
+
+function transformacionToNumber(data: string[][]): number[][] {
+  let newDataComplete: number[][] = [];
+  let newDataFila: number[] = [];
+
+  for (let i = 0; i < data.length; i++) {
+    for (let j = 0; j < data[0].length; j++) {
+      newDataFila.push(parseInt(data[i][j]));
+    }
+    newDataComplete.push(newDataFila);
+    newDataFila = [];
+  }
+  return newDataComplete;
 }
 
 function main(data: string) {
-  let corners: [string, string] = ["0", "0"];
-  let map: string[][];
+  let corners: [number, number] = [0, 0];
+  let map: number[][];
   const dataArray = readLine(data);
   const cleanWithoutSpaces = cleanArray(dataArray);
   const separateArray = separateXandY(cleanWithoutSpaces);
-  corners = cornersMap(separateArray);
+  const numberSeparateArray = transformacionToNumber(separateArray);
+  corners = cornersMap(numberSeparateArray);
   map = createMap(corners);
-  console.log(map)
-  runMatrix(separateArray, map);
+  console.log(map);
+  runMatrix(numberSeparateArray, map);
 }
 
 main(dataTest);

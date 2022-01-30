@@ -11,6 +11,11 @@ const dataTest = `
 5,5 -> 8,2
 `;
 
+const dataTest2 = `
+5,4 -> 5,2
+2,2 -> 2,3
+`;
+
 function readLine(data: string) {
   const newData = data.split("\n");
   return newData;
@@ -41,19 +46,72 @@ function separateXandY(data: string[]): string[][] {
 }
 
 function addMatrix(array: number[], eje: string, mapGeneral: number[][]) {
-  let newMapGeneral: number[][];
+  let newMapGeneral: number[][] = mapGeneral;
+  let up = 0;
+  let down = 0;
   if (eje === "x") {
-    mapGeneral[array[0]][array[1]] = mapGeneral[array[0]][array[1]] + 1;
+    if (array[1] > array[3]) {
+      up = array[1];
+      down = array[3];
+      console.log("Up vale");
+      console.log(up);
+      console.log("Down vale");
+      console.log(down);
+    } else {
+      up = array[3];
+      down = array[1];
+      console.log("Up vale");
+      console.log(up);
+      console.log("Down vale");
+      console.log(down);
+    }
+    console.log("Aca se ve el mapa general previo al cambio");
+    console.log(newMapGeneral);
+    //2,2 -> 2,1
+    while (down <= up) {
+      newMapGeneral[array[0]][down] += 1;
+      down++;
+    }
+
+    console.log("MapGeneral post cambio");
+    console.log(newMapGeneral);
+  } else {
+    if (array[0] > array[2]) {
+      up = array[0];
+      down = array[2];
+    } else {
+      up = array[2];
+      down = array[0];
+    }
+    while (down <= up) {
+      //2,2 -> 2,1
+      newMapGeneral[array[0]][down] += 1;
+      down++;
+    }
   }
+  return newMapGeneral;
 }
 
 function runMatrix(data: number[][], mapGeneral: number[][]) {
+  let newMapGeneral = [...mapGeneral];
   for (let i = 0; i < data.length; i++) {
     const element = data[i];
-    if ([element[0] === element[2]]) {
-      addMatrix(element, "x", mapGeneral);
+    console.log("El elemento que ingreso es este");
+    console.log(element);
+    console.log(element[0] === element[2]);
+    if (element[0] === element[2]) {
+      console.log("agrego matrix por x igual");
+      newMapGeneral = addMatrix(element, "x", mapGeneral);
+      console.log(newMapGeneral);
+    } else if (element[1] === element[3]) {
+      console.log("agrego matrix por y igual");
+      newMapGeneral = addMatrix(element, "y", mapGeneral);
+      console.log(newMapGeneral);
+    } else {
+      console.log("ni idea");
     }
   }
+  return newMapGeneral;
 }
 
 function comparation(num1: number, num2: number, numMax: number) {
@@ -76,19 +134,6 @@ function cornersMap(data: number[][]): [number, number] {
   return [xMax, yMax];
 }
 
-function createMap(array: number[]): number[][] {
-  let newMap: number[][] = [];
-  let newArray = [];
-  for (let i = 0; i < (array[0]) + 1; i++) {
-    for (let j = 0; j < (array[1]) + 1; j++) {
-      newArray.push(0);
-    }
-    newMap.push(newArray);
-    newArray = [];
-  }
-  return newMap;
-}
-
 function transformacionToNumber(data: string[][]): number[][] {
   let newDataComplete: number[][] = [];
   let newDataFila: number[] = [];
@@ -103,17 +148,26 @@ function transformacionToNumber(data: string[][]): number[][] {
   return newDataComplete;
 }
 
-function main(data: string) {
-  let corners: [number, number] = [0, 0];
-  let map: number[][];
-  const dataArray = readLine(data);
-  const cleanWithoutSpaces = cleanArray(dataArray);
-  const separateArray = separateXandY(cleanWithoutSpaces);
-  const numberSeparateArray = transformacionToNumber(separateArray);
-  corners = cornersMap(numberSeparateArray);
-  map = createMap(corners);
+function createMap2(cor: number[]) {
+  const map = [];
+  for (let i = 0; i <= cor[0]; i++) {
+    const array = new Array(cor[0] + 1);
+    array.fill(0);
+    map.push(array);
+  }
+  console.log("map creado");
   console.log(map);
-  runMatrix(numberSeparateArray, map);
+  return map;
 }
 
-main(dataTest);
+//main
+let corners: [number, number] = [0, 0];
+const dataArray = readLine(dataTest);
+const cleanWithoutSpaces = cleanArray(dataArray);
+const separateArray = separateXandY(cleanWithoutSpaces);
+const numberSeparateArray = transformacionToNumber(separateArray);
+corners = cornersMap(numberSeparateArray);
+const map = createMap2(corners);
+const finalMap = runMatrix(numberSeparateArray, map);
+console.log("This is the final map");
+console.log(finalMap);

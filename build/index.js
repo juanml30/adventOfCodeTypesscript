@@ -12,8 +12,8 @@ const dataTest = `
 5,5 -> 8,2
 `;
 const dataTest2 = `
-5,4 -> 5,2
-2,2 -> 2,3
+0,9 -> 5,9
+0,9 -> 2,9
 `;
 function readLine(data) {
     const newData = data.split("\n");
@@ -45,7 +45,7 @@ function addMatrix(array, eje, mapGeneral) {
     let newMapGeneral = mapGeneral;
     let up = 0;
     let down = 0;
-    if (eje === "y") {
+    if (eje === "x") {
         if (array[1] > array[3]) {
             up = array[1];
             down = array[3];
@@ -64,9 +64,9 @@ function addMatrix(array, eje, mapGeneral) {
         }
         console.log("Aca se ve el mapa general previo al cambio");
         console.log(newMapGeneral);
-        //2,2 -> 2,1
+        //0,9 -> 5,9
         while (down <= up) {
-            newMapGeneral[array[0]][down] += 1;
+            newMapGeneral[down][array[0]] += 1;
             down++;
         }
         console.log("MapGeneral post cambio");
@@ -83,7 +83,7 @@ function addMatrix(array, eje, mapGeneral) {
         }
         while (down <= up) {
             //2,2 -> 2,1
-            newMapGeneral[array[0]][down] += 1;
+            newMapGeneral[array[1]][down] += 1;
             down++;
         }
     }
@@ -147,7 +147,7 @@ function transformacionToNumber(data) {
 }
 function createMap2(cor) {
     const map = [];
-    for (let i = 0; i <= cor[0]; i++) {
+    for (let i = 0; i <= cor[1]; i++) {
         const array = new Array(cor[0] + 1);
         array.fill(0);
         map.push(array);

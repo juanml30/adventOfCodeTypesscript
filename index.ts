@@ -517,6 +517,7 @@ const dataTest = `
 const dataTest2 = `
 0,9 -> 5,9
 0,9 -> 2,9
+3,3 -> 1,5
 `;
 
 function readLine(data: string) {
@@ -578,7 +579,7 @@ function addMatrix(array: number[], eje: string, mapGeneral: number[][]) {
 
     console.log("MapGeneral post cambio");
     console.log(newMapGeneral);
-  } else {
+  } else if (eje === "y") {
     if (array[0] > array[2]) {
       up = array[0];
       down = array[2];
@@ -591,27 +592,74 @@ function addMatrix(array: number[], eje: string, mapGeneral: number[][]) {
       newMapGeneral[array[1]][down] += 1;
       down++;
     }
+  } else if (eje === "d") {
+    let cantX: number = 0;
+    let cantY: number = 0;
+    if (array[0] > array[2]) {
+      console.log("Decrece en X");
+      cantX = -1;
+      up = array[0];
+      down = array[2];
+    } else {
+      console.log("Crece en x");
+      cantX = 1;
+      up = array[2];
+      down = array[0];
+    }
+    if (array[1] > array[3]) {
+      console.log("Decrece en Y");
+      cantY = -1;
+    } else {
+      console.log("Crece en Y");
+      cantY = 1;
+    }
+    let cont: number = 0;
+    console.log("newMapGeneral previo cambios");
+    console.log(newMapGeneral);
+    while (down <= up) {
+      //2,2 -> 2,1
+      let valX: number = array[1] + cantY * cont;
+      let valY: number = array[0] + cantX * cont;
+      newMapGeneral[valX][valY] += 1;
+      down++;
+      cont++;
+    }
+
+    console.log("newMapGeneral post cambios");
+    console.log(newMapGeneral);
   }
   return newMapGeneral;
+}
+
+function verificationDiagonal(array: number[]) {
+  const mod1 = Math.abs(array[0] - array[2]);
+  const mod2 = Math.abs(array[1] - array[3]);
+  if (mod1 > 0 && mod1 === mod2) {
+    console.log("la entrada es: ");
+    console.log(array);
+    console.log("Son diagonales piolas!");
+  } else {
+    console.log("no son diagonales");
+    return false;
+  }
+  return true;
 }
 
 function runMatrix(data: number[][], mapGeneral: number[][]) {
   let newMapGeneral = [...mapGeneral];
   for (let i = 0; i < data.length; i++) {
     const element = data[i];
-    console.log("El elemento que ingreso es este");
-    console.log(element);
-    console.log(element[0] === element[2]);
+    let flag = false;
     if (element[0] === element[2]) {
-      console.log("agrego matrix por x igual");
       newMapGeneral = addMatrix(element, "x", mapGeneral);
+      flag = true;
       console.log(newMapGeneral);
-    } else if (element[1] === element[3]) {
+    } else if (element[1] === element[3] && flag === false) {
       console.log("agrego matrix por y igual");
       newMapGeneral = addMatrix(element, "y", mapGeneral);
       console.log(newMapGeneral);
-    } else {
-      console.log("ni idea");
+    } else if (verificationDiagonal(element) && flag === false) {
+      newMapGeneral = addMatrix(element, "d", mapGeneral);
     }
   }
   return newMapGeneral;
@@ -664,16 +712,16 @@ function createMap2(cor: number[]) {
 }
 
 function finalQuantity(mat: number[][]) {
-  let quantity:number = 0
+  let quantity: number = 0;
 
   for (let index = 0; index < mat.length; index++) {
     const array = mat[index];
-    const filtered = array.filter(function(element){
+    const filtered = array.filter(function (element) {
       return element >= 2;
-    })
-    quantity += filtered.length
+    });
+    quantity += filtered.length;
   }
-  return quantity
+  return quantity;
 }
 
 //main
@@ -687,4 +735,4 @@ const map = createMap2(corners);
 const finalMap = runMatrix(numberSeparateArray, map);
 console.log("This is the final map");
 console.log(finalMap);
-console.log(finalQuantity(finalMap))
+console.log(finalQuantity(finalMap));
